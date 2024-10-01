@@ -1,0 +1,2 @@
+class ImageDetector:
+    pass

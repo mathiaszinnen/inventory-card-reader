@@ -1,0 +1,2 @@
+class PageXMLParser:
+    pass
