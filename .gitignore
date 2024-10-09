@@ -2,3 +2,5 @@
 __pycache__/
 xml_output/
 output/
+runs/
+*.pt
