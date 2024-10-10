@@ -18,7 +18,7 @@ class PeroOCRProcessor():
                                      output_line_path=None)
 
     def parse_directory(self, image_directory, skip_processed_files=True):
-        image_exts = ['.jpg'] 
+        image_exts = ['.jpg', '.jpeg'] 
         images_to_process = [fn for fn in os.listdir(image_directory) if os.path.splitext(fn)[1] in image_exts]
         if skip_processed_files:
             processed_ids = [os.path.splitext(img_id)[0] for img_id in os.listdir(self.output_xml_path)]
