@@ -19,7 +19,7 @@ class YoloImageDetector:
         i = 1
         for img_chunk in self._batch(images_to_process, self.chunk_size):
             print(f'Detecting images in chunk {i}/{n_chunks}..')
-            self.model.predict(img_chunk, save_crop=True, device=self.device, save_dir='yolo_out',project='yolo_out')
+            self.model.predict(img_chunk, save_crop=True, device=self.device,name='Abbildungen',project='output')
             i+=1
 
 
