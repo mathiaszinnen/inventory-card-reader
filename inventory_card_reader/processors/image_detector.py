@@ -1,4 +1,6 @@
 from ultralytics import YOLO
+import glob
+import shutil
 import os
 
 class YoloImageDetector:
@@ -12,15 +14,30 @@ class YoloImageDetector:
         for ndx in range(0, l, n):
             yield iterable[ndx:ndx+n]
 
-    def parse_directory(self, input_dir):
+
+    def _move_crops(self, yolo_name, out_dir):
+        # yolo_output = glob.glob(f'{out_dir}/{yolo_name}*/')[0]
+        yolo_output = f'{out_dir}/{yolo_name}/'
+        crop_dir = f'{out_dir}/images/'
+        if not os.path.isdir(crop_dir):
+            os.makedirs(crop_dir)
+        for file in glob.glob(f'{yolo_output}/**/*.jpg', recursive=True):
+            fn = os.path.basename(file)
+            shutil.move(file, f'{crop_dir}/{fn}')
+        shutil.rmtree(yolo_output)
+        print(f'Detected images moved to \033[1m{crop_dir}\033')
+
+    def parse_directory(self, input_dir, crop_dir='tmp', output_base_dir='output'):
         image_exts = ['.jpg', '.jpeg'] 
         images_to_process = [f'{input_dir}/{fn}' for fn in os.listdir(input_dir) if os.path.splitext(fn)[1] in image_exts]
         n_chunks = len(images_to_process) // self.chunk_size + 1
         i = 1
         for img_chunk in self._batch(images_to_process, self.chunk_size):
             print(f'Detecting images in chunk {i}/{n_chunks}..')
-            self.model.predict(img_chunk, save_crop=True, device=self.device,name='Abbildungen',project='output')
+            self.model.predict(img_chunk, save_crop=True, device=self.device,name=crop_dir,project=output_base_dir)
+            self._move_crops(crop_dir, output_base_dir)
             i+=1
+
 
 
 

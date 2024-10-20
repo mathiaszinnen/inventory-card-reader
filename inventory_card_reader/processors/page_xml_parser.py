@@ -1,7 +1,6 @@
 import xml.etree.ElementTree as ET
 from glob import glob
 from tqdm import tqdm
-import numpy as np
 import pandas as pd
 import os
 import json
@@ -58,7 +57,8 @@ class PageXMLParser:
 
     def _remove_header(self, text, header_name):
         """Remove headers from extracted text."""
-        header_variants = [header_name + ': ', header_name + ':', header_name + ' :', header_name + ' :;', header_name + ':;', 'Vers.—Wert:', 'Vers.—Wert:;']
+        # todo: extract specific headers to postprocessing or add make them adaptable
+        header_variants = [header_name + ': ', header_name + ':', header_name + ' :', header_name + ' :;', header_name + ':;', 'Vers.—Wert:', 'Vers.—Wert:;'] 
         header_variants.extend([v.lower() for v in header_variants])
         if text in header_variants or text.lower() in header_variants:
             return None  # text is header only -> discard
@@ -118,7 +118,7 @@ class PageXMLParser:
             for column_name, column_box in self.template_regions.items():
                 if not self._is_region_match(relative_region_box, column_box):
                     continue
-                self._append_safe(results_dict, column_name, text)
+                self._append_safe(results_dict, column_name, text) # todo: move to postprocess
         return results_dict
 
     def process(self, output_folder, output_csv='out.csv', output_json='results.json'):
@@ -126,10 +126,11 @@ class PageXMLParser:
         results = []
         for input_xml in tqdm(glob(f'{self.xml_folder}/*.xml')):
             if self._is_verso(input_xml):
-                continue
+                continue # todo: move to preprocessor or make file name filters an argument
             page_results = self._extract_from_xml(input_xml)
             results.append(page_results)
 
+        # todo: move file saving to postprocessing
         if not os.path.exists(output_folder):
             os.makedirs(output_folder,exist_ok=True)
         self._dump_as_csv(results, f'{output_folder}/{output_csv}')

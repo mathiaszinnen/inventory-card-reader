@@ -29,7 +29,7 @@ def main(args):
     results = ocr_processor.parse_directory(args.input_folder)
     detector.parse_directory(args.input_folder)
     page_xml_processor.process(output_folder=args.output_dir)
-    print('aye')
+    print('Processing done')
 
 
 
