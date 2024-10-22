@@ -3,7 +3,7 @@ from configparser import ConfigParser
 import os
 
 
-class PeroOCRProcessor():
+class PeroOCRProcessor:
     def __init__(self, config_path, input_image_path, output_xml_path, device_name="gpu"):
         config = ConfigParser()
         config.read(config_path)
