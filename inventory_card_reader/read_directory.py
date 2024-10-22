@@ -28,8 +28,9 @@ def parse_args():
     return args
 
 def main(args):
+    pero_config_path = 'pero_resources/config_cpu.ini'
     detector = YoloImageDetector(args.yolo_weights)
-    ocr_processor = PeroOCRProcessor(args.pero_config, args.input_folder, args.xml_output_folder)
+    ocr_processor = PeroOCRProcessor(pero_config_path, args.input_folder, args.xml_output_folder)
     page_xml_processor = PageXMLParser(args.region_config, args.xml_output_folder,
                                        custom_header_filters=args.header_filters,
                                        file_skip_markers=args.file_skip_markers)
