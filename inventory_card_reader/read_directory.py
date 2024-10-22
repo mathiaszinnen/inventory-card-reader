@@ -3,7 +3,6 @@ from processors.page_xml_parser import PageXMLParser
 from processors.pero_ocr_processor import PeroOCRProcessor
 import argparse
 import yaml
-import os
 
 def parse_yaml_config(args):
     with open(args.config, 'r') as f:
