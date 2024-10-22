@@ -2,7 +2,8 @@
 This repository contains code to read, process, and integrate data from inventory cards. Currently it uses (pero-ocr)[https://github.com/DCGM/pero-ocr] for text recognition. 
 
 ## Installation
-TBD
+1. Install the package from pip using `pip install inventory-card-reader`
+2. Or clone the repository and do your thing
 
 ## Prepare config files
 - Create a config yaml file with the following keys:
