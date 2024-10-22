@@ -89,7 +89,7 @@ class PageXMLParser:
     def _skip_file(self, xml_path):
         """Check if the file should be skipped based on file name."""
         file_name = os.path.basename(xml_path)
-        for skip_marker in self.skip_markers:
+        for skip_marker in self.file_skip_markers:
             if skip_marker in file_name:
                 return True
         return False
