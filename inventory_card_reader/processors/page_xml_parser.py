@@ -6,12 +6,15 @@ import os
 import json
 
 class PageXMLParser:
-    def __init__(self, region_config, xml_folder):
+    def __init__(self, region_config, xml_folder, custom_header_filters=[], file_skip_markers=[]):
         """
         Initialize the PageXMLParser with a region configuration file and XML folder.
         """
         self.template_regions = self._get_regions(region_config)
         self.xml_folder = xml_folder
+        self.custom_header_filters = custom_header_filters
+        self.file_skip_markers = file_skip_markers
+
 
     def _get_regions(self, config_json):
         """Load regions from the configuration JSON file."""
@@ -57,8 +60,8 @@ class PageXMLParser:
 
     def _remove_header(self, text, header_name):
         """Remove headers from extracted text."""
-        # todo: extract specific headers to postprocessing or add make them adaptable
-        header_variants = [header_name + ': ', header_name + ':', header_name + ' :', header_name + ' :;', header_name + ':;', 'Vers.—Wert:', 'Vers.—Wert:;'] 
+        header_variants = [header_name + ':', header_name + ' :', header_name + ' :;', header_name + ':;'] 
+        header_variants.extend(self.custom_header_filters)
         header_variants.extend([v.lower() for v in header_variants])
         if text in header_variants or text.lower() in header_variants:
             return None  # text is header only -> discard
@@ -83,11 +86,10 @@ class PageXMLParser:
         out_dct[header_name].append(text)
         return out_dct
 
-    def _is_verso(self, xml_path):
-        """Check if the file should be skipped based on 'Verso' markers."""
+    def _skip_file(self, xml_path):
+        """Check if the file should be skipped based on file name."""
         file_name = os.path.basename(xml_path)
-        skip_markers = ['Verso', 'verso', 'Zusatz', 'zusatz']
-        for skip_marker in skip_markers:
+        for skip_marker in self.skip_markers:
             if skip_marker in file_name:
                 return True
         return False
@@ -125,7 +127,7 @@ class PageXMLParser:
         """Process all XML files in the provided folder and output results as CSV and JSON."""
         results = []
         for input_xml in tqdm(glob(f'{self.xml_folder}/*.xml')):
-            if self._is_verso(input_xml):
+            if self._skip_file(input_xml):
                 continue # todo: move to preprocessor or make file name filters an argument
             page_results = self._extract_from_xml(input_xml)
             results.append(page_results)

@@ -22,14 +22,18 @@ def parse_args():
     return parser.parse_args()
 
 def main(args):
+    header_filters = ['Vers.-Wert:','Vers.-Wert:;']
+    file_skip_markers = ['Verso', 'verso', 'Zusatz', 'zusatz']
     detector = YoloImageDetector(args.detection_weights)
     ocr_processor = PeroOCRProcessor(args.pero_config, args.input_folder, args.xml_output_folder)
-    page_xml_processor = PageXMLParser(args.region_config, args.xml_output_folder)
+    page_xml_processor = PageXMLParser(args.region_config, args.xml_output_folder,
+                                       custom_header_filters=header_filters,
+                                       file_skip_markers=file_skip_markers)
 
     results = ocr_processor.parse_directory(args.input_folder)
     detector.parse_directory(args.input_folder)
     page_xml_processor.process(output_folder=args.output_dir)
-    print('Processing done')
+    print(f'Extracted images and information saved to {args.output_dir}')
 
 
 
