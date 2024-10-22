@@ -3,6 +3,7 @@ __pycache__/
 xml_output/
 output/
 configs/
+dist/
 models/
 data/
 xml_output/
