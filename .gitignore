@@ -8,4 +8,5 @@ data/
 xml_output/
 runs/
 *.pt
+*.pt.cpu
 .vscode/
