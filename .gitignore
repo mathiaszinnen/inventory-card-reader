@@ -4,6 +4,7 @@ xml_output/
 output/
 configs/
 dist/
+*.egg-info/
 models/
 data/
 xml_output/
