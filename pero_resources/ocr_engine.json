@@ -1,6 +1,6 @@
 {
     "exported": "true",
-    "checkpoint": "../models/OCR_350000.pt",
+    "checkpoint": "./OCR_350000.pt",
     "line_px_height": 40,
     "line_vertical_scale": 1.25,
     "net_name": "VGG_LSTM_B64_L17_S4_CB4",
