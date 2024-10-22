@@ -3,6 +3,7 @@ __pycache__/
 xml_output/
 output/
 configs/
+models/
 xml_output/
 runs/
 *.pt
