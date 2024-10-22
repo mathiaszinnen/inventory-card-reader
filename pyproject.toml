@@ -1,6 +1,6 @@
 [project]
 name = "inventory-card-reader"
-version = "0.0.1"
+version = "0.0.3"
 authors = [
     {name="Mathias Zinnen", email="mathias.zinnen@gmail.com"}
 ]
