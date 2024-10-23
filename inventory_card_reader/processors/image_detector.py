@@ -1,5 +1,5 @@
 from ultralytics import YOLO
-from processors.utils import download_and_unzip
+from inventory_card_reader.processors.utils import download_and_unzip
 import glob
 import shutil
 import os

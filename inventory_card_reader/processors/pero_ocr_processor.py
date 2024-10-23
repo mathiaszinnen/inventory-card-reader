@@ -1,6 +1,6 @@
 from pero_ocr.user_scripts.parse_folder import get_device, PageParser, Computator, create_dir_if_not_exists
 from configparser import ConfigParser
-from processors.utils import download_and_unzip
+from inventory_card_reader.processors.utils import download_and_unzip
 import os
 
 

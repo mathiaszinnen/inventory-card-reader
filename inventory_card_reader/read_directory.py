@@ -1,6 +1,6 @@
-from processors.image_detector import YoloImageDetector
-from processors.page_xml_parser import PageXMLParser
-from processors.pero_ocr_processor import PeroOCRProcessor
+from inventory_card_reader.processors.image_detector import YoloImageDetector
+from inventory_card_reader.processors.page_xml_parser import PageXMLParser
+from inventory_card_reader.processors.pero_ocr_processor import PeroOCRProcessor
 import argparse
 import os
 import appdirs
@@ -28,7 +28,8 @@ def parse_args():
 
     return args
 
-def main(args):
+def main():
+    args = parse_args()
     resources_path=appdirs.user_data_dir('inventory_card_reader')
     xml_folder = os.path.join(resources_path,'xml')
     detector = YoloImageDetector(resources_path)
@@ -43,8 +44,5 @@ def main(args):
     page_xml_processor.process()
     #print(f'Extracted images and information saved to {args.output_dir}')
 
-
-
 if __name__ == '__main__':
-    args = parse_args()
-    main(args)
+    main()
