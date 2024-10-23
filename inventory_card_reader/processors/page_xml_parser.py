@@ -3,23 +3,24 @@ from glob import glob
 from tqdm import tqdm
 import pandas as pd
 import os
-import json
+import yaml
 
 class PageXMLParser:
-    def __init__(self, region_config, xml_folder, custom_header_filters=[], file_skip_markers=[]):
+    def __init__(self, config, xml_folder, custom_header_filters=[], file_skip_markers=[], custom_header_mappings={}):
         """
         Initialize the PageXMLParser with a region configuration file and XML folder.
         """
-        self.template_regions = self._get_regions(region_config)
+        self.template_regions = self._get_regions(config)
         self.xml_folder = xml_folder
         self.custom_header_filters = custom_header_filters
         self.file_skip_markers = file_skip_markers
+        self.custom_header_mappings = custom_header_mappings
 
 
-    def _get_regions(self, config_json):
-        """Load regions from the configuration JSON file."""
-        with open(config_json) as f:
-            conf = json.load(f)
+    def _get_regions(self, config_yaml):
+        """Load regions from the configuration YAML file."""
+        with open(config_yaml) as f:
+            conf = yaml.safe_load(f)  
         return conf['regions']
 
     def _get_results_dict(self, xml_path):
@@ -138,13 +139,22 @@ class PageXMLParser:
             os.makedirs(output_folder,exist_ok=True)
         self._dump_as_csv(results, output_folder, output_csv)
 
+
     def _dump_as_csv(self, results, output_folder, output_csv):
         """Dump the results into a CSV file."""
         out_pth = os.path.join(output_folder, output_csv)
+    
         headers = list(results[0].keys())
-        headers = [s.replace('am', 'erworben am') for s in headers]
-        upd = []
-        for dct in [r for r in results if r is not None]:
-            upd.append({k: ';'.join(v) for k, v in dct.items()})
-        df = pd.DataFrame(upd)
-        df.to_csv(out_pth, header=headers, index=None)
+
+        # Replace headers according to the custom mappings
+        new_headers = {k: self.custom_header_mappings.get(k, k) for k in headers}
+
+        # Create a list of updated dictionaries with new header keys
+        updated_results = []
+        for result in results:
+            updated_results.append({new_headers[k]: v for k, v in result.items()})
+
+        # Convert the list of dictionaries to a DataFrame and write to CSV
+        df = pd.DataFrame(updated_results)
+        df.to_csv(out_pth, index=False)
+

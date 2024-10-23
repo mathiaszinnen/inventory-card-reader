@@ -33,9 +33,10 @@ def main(args):
     xml_folder = os.path.join(resources_path,'xml')
     detector = YoloImageDetector(resources_path)
     ocr_processor = PeroOCRProcessor(args.input_folder, resources_path)
-    page_xml_processor = PageXMLParser(args.region_config, xml_folder,
+    page_xml_processor = PageXMLParser(args.config, xml_folder,
                                        custom_header_filters=args.header_filters,
-                                       file_skip_markers=args.file_skip_markers)
+                                       file_skip_markers=args.file_skip_markers,
+                                       custom_header_mappings=args.custom_header_mappings)
 
     results = ocr_processor.parse_directory(args.input_folder)
     detector.parse_directory(args.input_folder)
