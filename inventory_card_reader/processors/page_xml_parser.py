@@ -123,8 +123,8 @@ class PageXMLParser:
                 self._append_safe(results_dict, column_name, text) # todo: move to postprocess
         return results_dict
 
-    def process(self, output_folder, output_csv='out.csv', output_json='results.json'):
-        """Process all XML files in the provided folder and output results as CSV and JSON."""
+    def process(self, output_folder='output', output_csv='out.csv'):
+        """Process all XML files in the provided folder and output results as CSV."""
         results = []
         for input_xml in tqdm(glob(f'{self.xml_folder}/*.xml')):
             if self._skip_file(input_xml):
@@ -135,11 +135,11 @@ class PageXMLParser:
         # todo: move file saving to postprocessing
         if not os.path.exists(output_folder):
             os.makedirs(output_folder,exist_ok=True)
-        self._dump_as_csv(results, f'{output_folder}/{output_csv}')
-        self._dump_as_json(results, f'{output_folder}/{output_json}')
+        self._dump_as_csv(results, output_folder, output_csv)
 
-    def _dump_as_csv(self, results, out_pth):
+    def _dump_as_csv(self, results, output_folder, output_csv):
         """Dump the results into a CSV file."""
+        out_pth = os.path.join(output_folder, output_csv)
         headers = list(results[0].keys())
         headers = [s.replace('am', 'erworben am') for s in headers]
         upd = []
@@ -147,9 +147,3 @@ class PageXMLParser:
             upd.append({k: ';'.join(v) for k, v in dct.items()})
         df = pd.DataFrame(upd)
         df.to_csv(out_pth, header=headers, index=None)
-
-    def _dump_as_json(self, results, out_pth):
-        """Dump the results into a JSON file."""
-        with open(out_pth, 'w') as f:
-            json.dump(results, f, indent=4, ensure_ascii=False)
-
