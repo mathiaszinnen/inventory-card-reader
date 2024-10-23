@@ -126,9 +126,10 @@ class PageXMLParser:
     def process(self, output_folder='output', output_csv='out.csv'):
         """Process all XML files in the provided folder and output results as CSV."""
         results = []
-        for input_xml in tqdm(glob(f'{self.xml_folder}/*.xml')):
+        xml_files = glob(os.path.join(self.xml_folder, '*.xml'))
+        for input_xml in tqdm(xml_files):
             if self._skip_file(input_xml):
-                continue # todo: move to preprocessor or make file name filters an argument
+                continue
             page_results = self._extract_from_xml(input_xml)
             results.append(page_results)
 

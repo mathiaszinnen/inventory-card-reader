@@ -40,7 +40,7 @@ def main(args):
     results = ocr_processor.parse_directory(args.input_folder)
     detector.parse_directory(args.input_folder)
     page_xml_processor.process()
-    print(f'Extracted images and information saved to {args.output_dir}')
+    #print(f'Extracted images and information saved to {args.output_dir}')
 
 
 
