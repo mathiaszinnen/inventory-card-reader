@@ -1,13 +1,23 @@
 from ultralytics import YOLO
+from processors.utils import download_and_unzip
 import glob
 import shutil
 import os
 
 class YoloImageDetector:
-    def __init__(self,weights, chunk_size=50, device='cuda:0'):
-        self.model = YOLO(weights)
+    def __init__(self,resources_path, chunk_size=50, device='cuda:0', 
+                 weights_url='https://faubox.rrze.uni-erlangen.de/dl/fi9iK4rseupfrrTeXWQUGP/weights.zip'):
+        self._prepare_resources(resources_path, weights_url)
+        self.model = YOLO(os.path.join(resources_path, 'yolov8.pt'))
         self.chunk_size=chunk_size
         self.device = device
+
+    def _prepare_resources(self, resources_path, weights_url):
+        if os.path.exists(os.path.join(resources_path, 'yolov8.pt')):
+            return
+        print(f'Downloading YOLO weights to {os.path.abspath(resources_path)}...')
+        download_and_unzip(weights_url, resources_path)
+        
 
     def _batch(self, iterable, n=1):
         l = len(iterable)

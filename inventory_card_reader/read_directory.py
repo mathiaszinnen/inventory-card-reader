@@ -31,7 +31,7 @@ def parse_args():
 def main(args):
     resources_path=appdirs.user_data_dir('inventory_card_reader')
     xml_folder = os.path.join(resources_path,'xml')
-    detector = YoloImageDetector(args.yolo_weights)
+    detector = YoloImageDetector(resources_path)
     ocr_processor = PeroOCRProcessor(args.input_folder, resources_path)
     page_xml_processor = PageXMLParser(args.region_config, xml_folder,
                                        custom_header_filters=args.header_filters,
