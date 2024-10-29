@@ -1,12 +1,11 @@
 import xml.etree.ElementTree as ET
 from glob import glob
 from tqdm import tqdm
-import pandas as pd
 import os
 import yaml
 
 class PageXMLParser:
-    def __init__(self, config, xml_folder, custom_header_filters=[], file_skip_markers=[], custom_header_mappings={}):
+    def __init__(self, config, xml_folder, custom_header_filters=[], file_skip_markers=[]):
         """
         Initialize the PageXMLParser with a region configuration file and XML folder.
         """
@@ -14,7 +13,6 @@ class PageXMLParser:
         self.xml_folder = xml_folder
         self.custom_header_filters = custom_header_filters
         self.file_skip_markers = file_skip_markers
-        self.custom_header_mappings = custom_header_mappings
 
 
     def _get_regions(self, config_yaml):
@@ -25,7 +23,7 @@ class PageXMLParser:
 
     def _get_results_dict(self, xml_path):
         """Initialize a results dictionary to store extracted text data."""
-        results_dict = {k: [] for k in self.template_regions.keys()}
+        results_dict = {k: '' for k in self.template_regions.keys()}
         results_dict['source_xml'] = os.path.basename(xml_path)
         return results_dict
 
@@ -84,7 +82,7 @@ class PageXMLParser:
         if text is None:
             return out_dct
         text = self._handle_hyphenation(text)
-        out_dct[header_name].append(text)
+        out_dct[header_name] = text
         return out_dct
 
     def _skip_file(self, xml_path):
@@ -121,10 +119,10 @@ class PageXMLParser:
             for column_name, column_box in self.template_regions.items():
                 if not self._is_region_match(relative_region_box, column_box):
                     continue
-                self._append_safe(results_dict, column_name, text) # todo: move to postprocess
+                self._append_safe(results_dict, column_name, text) 
         return results_dict
 
-    def process(self, output_folder='output', output_csv='out.csv'):
+    def process(self):
         """Process all XML files in the provided folder and output results as CSV."""
         results = []
         xml_files = glob(os.path.join(self.xml_folder, '*.xml'))
@@ -134,27 +132,5 @@ class PageXMLParser:
             page_results = self._extract_from_xml(input_xml)
             results.append(page_results)
 
-        # todo: move file saving to postprocessing
-        if not os.path.exists(output_folder):
-            os.makedirs(output_folder,exist_ok=True)
-        self._dump_as_csv(results, output_folder, output_csv)
-
-
-    def _dump_as_csv(self, results, output_folder, output_csv):
-        """Dump the results into a CSV file."""
-        out_pth = os.path.join(output_folder, output_csv)
-    
-        headers = list(results[0].keys())
-
-        # Replace headers according to the custom mappings
-        new_headers = {k: self.custom_header_mappings.get(k, k) for k in headers}
-
-        # Create a list of updated dictionaries with new header keys
-        updated_results = []
-        for result in results:
-            updated_results.append({new_headers[k]: v for k, v in result.items()})
-
-        # Convert the list of dictionaries to a DataFrame and write to CSV
-        df = pd.DataFrame(updated_results)
-        df.to_csv(out_pth, index=False)
+        return results
 
