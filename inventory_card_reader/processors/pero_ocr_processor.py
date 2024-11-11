@@ -5,7 +5,7 @@ import os
 
 
 class PeroOCRProcessor:
-    def __init__(self, input_image_path, resources_path, device_name='gpu',
+    def __init__(self, input_image_path, resources_path, device_name='cpu',
                  resources_url='https://nextcloud.fit.vutbr.cz/s/NtAbHTNkZFpapdJ/download/pero_eu_cz_print_newspapers_2022-09-26.zip'):
         self._prepare_resources(resources_path, resources_url)
         config = ConfigParser()
