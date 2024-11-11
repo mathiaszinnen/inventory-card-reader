@@ -15,6 +15,16 @@ def parse_yaml_config(args):
             setattr(args, k, v)
     return args
 
+def prepare_resources_dir(use_cache):
+    resources_path=appdirs.user_data_dir('inventory_card_reader')
+    xml_folder = os.path.join(resources_path,'xml')
+    if not use_cache and os.path.isdir(xml_folder):
+        shutil.rmtree(xml_folder)
+    if not os.path.isdir(xml_folder):
+        os.makedirs(xml_folder)
+    print(f'Using temporary resources dir {resources_path}.')
+    return resources_path
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -33,17 +43,15 @@ def parse_args():
 
 def main():
     args = parse_args()
-    resources_path=appdirs.user_data_dir('inventory_card_reader')
+    resources_path = prepare_resources_dir(args.use_cache)    
     xml_folder = os.path.join(resources_path,'xml')
-    if not args.use_cache:
-        shutil.rmtree(xml_folder)
+
     detector = YoloImageDetector(resources_path)
     ocr_processor = PeroOCRProcessor(args.input_folder, resources_path)
     page_xml_processor = PageXMLParser(args.config, xml_folder,
                                        custom_header_filters=args.header_filters,
                                        file_skip_markers=args.file_skip_markers)
     postprocessor = PostProcessor()
-
     ocr_processor.parse_directory(args.input_folder)
     detector.parse_directory(args.input_folder)
     results = page_xml_processor.process()
