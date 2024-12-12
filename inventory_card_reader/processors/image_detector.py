@@ -5,7 +5,7 @@ import shutil
 import os
 
 class YoloImageDetector:
-    def __init__(self, resources_path, chunk_size=50, device='cuda:0',
+    def __init__(self, resources_path, chunk_size=50, device='cpu',
                  weights_url='https://faubox.rrze.uni-erlangen.de/dl/fi9iK4rseupfrrTeXWQUGP/weights.zip'):
         self._prepare_resources(resources_path, weights_url)
         self.model = YOLO(os.path.join(resources_path, 'yolov8.pt'))
