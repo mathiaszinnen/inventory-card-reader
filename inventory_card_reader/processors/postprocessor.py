@@ -7,7 +7,12 @@ class PostProcessor:
         headers = list(results[0].keys())
         new_headers = {k: mappings.get(k, k) for k in headers}
         updated_results = []
+        print(f'Postprocessing {len(results)} results...')
         for result in results:
+            print(result)
+            if result is None:
+                print('Invalid result. Skipping..')
+                continue
             updated_results.append({new_headers[k]: v for k, v in result.items()})
 
         return updated_results
