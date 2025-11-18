@@ -1,3 +1,6 @@
+# DEPRECATED NOTE
+Note that this repository has been replaced by (inventory-ocr)[https://github.com/mathiaszinnen/inventory-ocr] and is no longer being maintained.
+
 # Inventory Card Reader
 This repository contains code to read, process, and integrate data from inventory cards. Currently it uses (pero-ocr)[https://github.com/DCGM/pero-ocr] for text recognition. 
 
